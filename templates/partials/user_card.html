@@ -1,0 +1,21 @@
+{% load helpup_tags %}
+<div class="card user-card">
+  <a href="{% url 'accounts:profile' u.username %}">{% avatar u 'lg' %}</a>
+  <div class="info">
+    <a class="name" href="{% url 'accounts:profile' u.username %}">{{ u.profile.display_name }}</a>
+    <div class="meta">@{{ u.username }}</div>
+    {% if u.profile.location_label %}<div class="meta loc"><svg class="ic ic-xs"><use href="#i-pin"/></svg> {{ u.profile.location_label }}</div>{% endif %}
+    {% if u.profile.bio %}<p class="bio">{{ u.profile.bio|truncatechars:90 }}</p>{% endif %}
+    {% if shared or same_neighbourhood %}
+      <div class="chips">
+        {% if same_neighbourhood %}<span class="chip hot">Your neighbourhood</span>{% endif %}
+        {% for i in shared %}<span class="chip">{{ i }}</span>{% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  {% if u.pk != user.pk %}
+    <div class="user-card-action">
+      {% if u.pk in followed %}{% include 'partials/follow_button.html' with target=u following=True %}{% else %}{% include 'partials/follow_button.html' with target=u following=False %}{% endif %}
+    </div>
+  {% endif %}
+</div>

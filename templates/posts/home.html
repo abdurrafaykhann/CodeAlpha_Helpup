@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="layout">
+  <section class="feed">
+    {% include 'partials/composer.html' %}
+
+    <div class="tabs" role="tablist">
+      <a class="{% if tab == 'following' %}on{% endif %}" href="{% url 'home' %}" role="tab">Following</a>
+      <a class="{% if tab == 'latest' %}on{% endif %}" href="{% url 'home' %}?tab=latest" role="tab">Latest</a>
+    </div>
+
+    {% for post in page %}
+      {% include 'partials/post_card.html' %}
+    {% empty %}
+      <div class="card empty-state">
+        <h3>Your feed is quiet</h3>
+        <p>{% if tab == 'following' %}Follow a few people and their posts will show up here, or write the first post yourself.{% else %}Nothing has been posted yet. Be the first!{% endif %}</p>
+        <a class="btn btn-accent" href="{% url 'social:explore' %}">Find people to follow</a>
+      </div>
+    {% endfor %}
+
+    {% if recommended %}
+      <div class="section-title">Recommended for you</div>
+      {% for post in recommended %}{% include 'partials/post_card.html' %}{% endfor %}
+    {% endif %}
+
+    {% include 'partials/pagination.html' %}
+  </section>
+
+  <aside class="sidebar">
+    <div class="card side-card">
+      <div class="side-me">
+        <a href="{% url 'accounts:profile' user.username %}">{% avatar user 'lg' %}</a>
+        <div><a class="name" href="{% url 'accounts:profile' user.username %}">{{ user.profile.display_name }}</a><div class="meta">@{{ user.username }}</div></div>
+      </div>
+      {% if not user.profile.city %}
+        <p class="meta">Add your city and neighbourhood to be discovered nearby.</p>
+        <a class="btn btn-ghost btn-sm" href="{% url 'accounts:profile_edit' %}">Complete profile</a>
+      {% endif %}
+    </div>
+
+    <div class="card side-card">
+      <h3>Who to follow</h3>
+      {% for u in suggestions %}
+        <div class="mini-user">
+          <a href="{% url 'accounts:profile' u.username %}">{% avatar u 'md' %}</a>
+          <div class="info"><a class="name" href="{% url 'accounts:profile' u.username %}">{{ u.profile.display_name }}</a><div class="meta">{% if u.profile.city %}{{ u.profile.city }}{% else %}@{{ u.username }}{% endif %}</div></div>
+          {% include 'partials/follow_button.html' with target=u following=False %}
+        </div>
+      {% empty %}
+        <p class="meta">You're following everyone. Wow!</p>
+      {% endfor %}
+      <a class="link-btn" href="{% url 'social:nearby' %}">See who's nearby →</a>
+    </div>
+  </aside>
+</div>
+{% endblock %}

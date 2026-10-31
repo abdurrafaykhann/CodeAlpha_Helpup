@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="narrow">
+  <div class="page-head row-between">
+    <h1>Notifications</h1>
+    <form method="post" action="{% url 'notifications:mark_all_read' %}">{% csrf_token %}<button class="btn btn-ghost btn-sm" type="submit">Mark all as read</button></form>
+  </div>
+  <div class="card notif-list">
+    {% for n in page %}
+      <a class="notif {% if n.pk in unread_ids %}unread{% endif %}" href="{% if n.post_id %}{{ n.post.get_absolute_url }}{% else %}{% url 'accounts:profile' n.actor.username %}{% endif %}">
+        {% avatar n.actor 'md' %}
+        <div class="notif-text"><strong>{{ n.actor.profile.display_name }}</strong> {{ n.get_verb_display }}.
+          <div class="meta">{{ n.created_at|timesince }} ago</div></div>
+        {% if n.pk in unread_ids %}<span class="dot" aria-label="New"></span>{% endif %}
+      </a>
+    {% empty %}
+      <div class="empty-state"><h3>You're all caught up</h3><p>Follows, likes and comments will show up here.</p></div>
+    {% endfor %}
+  </div>
+  {% include 'partials/pagination.html' %}
+</div>
+{% endblock %}

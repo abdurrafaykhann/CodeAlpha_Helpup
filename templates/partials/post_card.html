@@ -1,0 +1,47 @@
+{% load helpup_tags %}
+<article class="card post" id="post-{{ post.pk }}" data-post="{{ post.pk }}">
+  <header class="post-head">
+    <a href="{% url 'accounts:profile' post.author.username %}">{% avatar post.author 'md' %}</a>
+    <div class="who">
+      <a class="name" href="{% url 'accounts:profile' post.author.username %}">{{ post.author.profile.display_name }}</a>
+      <div class="meta">@{{ post.author.username }} · <a href="{{ post.get_absolute_url }}">{{ post.created_at|timesince }} ago</a>{% if post.was_edited %} · edited{% endif %}{% if post.author.profile.city %} · <svg class="ic ic-xs"><use href="#i-pin"/></svg> {{ post.author.profile.city }}{% endif %}</div>
+    </div>
+    {% if post.author_id == user.id %}
+      <details class="kebab">
+        <summary aria-label="Post options">⋯</summary>
+        <div class="menu-pop">
+          <a href="{% url 'posts:edit' post.pk %}">Edit post</a>
+          <a href="{% url 'posts:delete' post.pk %}" class="danger">Delete post</a>
+        </div>
+      </details>
+    {% endif %}
+  </header>
+
+  {% if post.text %}<p class="post-text">{{ post.text|linebreaksbr }}</p>{% endif %}
+  {% if post.image %}
+    <a href="{{ post.get_absolute_url }}" class="post-img-link"><img class="post-img" src="{{ post.image.url }}" alt="Image shared by {{ post.author.username }}" loading="lazy"></a>
+  {% endif %}
+
+  <footer class="post-actions">
+    <form method="post" action="{% url 'posts:like' post.pk %}" data-like-form>{% csrf_token %}
+      <button type="submit" class="act like {% if post.liked %}on{% endif %}" aria-pressed="{% if post.liked %}true{% else %}false{% endif %}" aria-label="Like">
+        <svg class="ic"><use href="#i-heart"/></svg> <span data-like-count>{{ post.like_count }}</span>
+      </button>
+    </form>
+    {% if expanded %}
+      <a class="act" href="#comments"><svg class="ic"><use href="#i-comment"/></svg> <span data-comment-count>{{ post.comment_count }}</span></a>
+    {% else %}
+      <button type="button" class="act" data-toggle-comments data-url="{% url 'posts:comments' post.pk %}" aria-expanded="false" aria-label="Comments">
+        <svg class="ic"><use href="#i-comment"/></svg> <span data-comment-count>{{ post.comment_count }}</span>
+      </button>
+    {% endif %}
+  </footer>
+
+  <section class="comments" id="{% if expanded %}comments{% endif %}" data-comments {% if not expanded %}hidden{% endif %}>
+    <div class="comments-list" data-comments-list>{% if expanded %}{% include 'partials/comment_list.html' %}{% endif %}</div>
+    <form class="comment-form" method="post" action="{% url 'posts:comment_add' post.pk %}" data-comment-form>{% csrf_token %}
+      <input type="text" name="text" maxlength="500" placeholder="Write a comment…" aria-label="Write a comment" autocomplete="off" required>
+      <button type="submit" class="btn btn-accent btn-sm">Post</button>
+    </form>
+  </section>
+</article>

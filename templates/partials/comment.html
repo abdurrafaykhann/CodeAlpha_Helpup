@@ -1,0 +1,16 @@
+{% load helpup_tags %}
+<div class="comment" data-comment="{{ comment.pk }}">
+  <a href="{% url 'accounts:profile' comment.author.username %}">{% avatar comment.author 'sm' %}</a>
+  <div class="comment-body">
+    <div class="comment-head">
+      <a class="name" href="{% url 'accounts:profile' comment.author.username %}">{{ comment.author.username }}</a>
+      <span class="meta">{{ comment.created_at|timesince }} ago</span>
+      {% if comment.author_id == user.id %}
+        <form method="post" action="{% url 'posts:comment_delete' comment.pk %}" data-comment-delete>{% csrf_token %}
+          <button type="submit" class="link-btn danger">Delete</button>
+        </form>
+      {% endif %}
+    </div>
+    <p>{{ comment.text }}</p>
+  </div>
+</div>

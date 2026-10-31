@@ -1,0 +1,8 @@
+{% load helpup_tags %}
+{% if page.has_other_pages %}
+  <nav class="pager" aria-label="Pagination">
+    {% if page.has_previous %}<a class="btn btn-ghost btn-sm" href="?{% qs_with page=page.previous_page_number %}">← Newer</a>{% else %}<span></span>{% endif %}
+    <span class="meta">Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-ghost btn-sm" href="?{% qs_with page=page.next_page_number %}">Older →</a>{% else %}<span></span>{% endif %}
+  </nav>
+{% endif %}

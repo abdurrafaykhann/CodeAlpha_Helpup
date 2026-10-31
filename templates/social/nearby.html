@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}Nearby{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Nearby</h1>
+  <p class="meta">Meet people in your city and neighbourhood. Only city and neighbourhood are shared, never an address.</p>
+</div>
+
+{% if not my_profile.city %}
+  <div class="notice">Add your city to see people near you. <a href="{% url 'accounts:profile_edit' %}"><strong>Update your profile</strong></a></div>
+{% elif not my_profile.show_in_nearby %}
+  <div class="notice">You're hidden from Nearby, so others can't find you. <a href="{% url 'accounts:profile_edit' %}"><strong>Change this in settings</strong></a></div>
+{% endif %}
+
+<form class="card filter-card" method="get" action="{% url 'social:nearby' %}" data-autosubmit>
+  <div class="field">
+    <label for="city">City</label>
+    <select id="city" name="city">
+      <option value="">All cities</option>
+      {% for c in cities %}<option value="{{ c }}" {% if c|lower == city|lower %}selected{% endif %}>{{ c }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="neighbourhood">Neighbourhood</label>
+    <select id="neighbourhood" name="neighbourhood">
+      <option value="">Any neighbourhood</option>
+      {% for n in neighbourhoods %}<option value="{{ n }}" {% if n|lower == neighbourhood|lower %}selected{% endif %}>{{ n }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="field">
+    <label for="interest">Shared interest</label>
+    <select id="interest" name="interest">
+      <option value="">Any interest</option>
+      {% for i in interests %}<option value="{{ i }}" {% if i|lower == interest %}selected{% endif %}>{{ i }}</option>{% endfor %}
+    </select>
+  </div>
+  <div class="filter-actions">
+    <button class="btn btn-accent" type="submit">Apply</button>
+    <a class="btn btn-ghost" href="{% url 'social:nearby' %}?city=">Clear</a>
+  </div>
+</form>
+
+<div class="section-title">{{ total }} {{ total|pluralize:"person,people" }} found{% if city %} in {{ city }}{% endif %}{% if neighbourhood %} · {{ neighbourhood }}{% endif %}</div>
+<div class="grid-cards">
+  {% for card in cards %}
+    {% with u=card.user shared=card.shared same_neighbourhood=card.same_neighbourhood %}
+      {% include 'partials/user_card.html' %}
+    {% endwith %}
+  {% empty %}
+    <div class="card empty-state">
+      <h3>No one found here yet</h3>
+      <p>Try another neighbourhood or clear the filters. People only appear if they've chosen to be visible on Nearby.</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

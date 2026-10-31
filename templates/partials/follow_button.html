@@ -1,0 +1,3 @@
+<form method="post" action="{% url 'social:follow' target.username %}" data-follow-form>{% csrf_token %}
+  <button type="submit" class="btn btn-sm {% if following %}btn-ghost is-following{% else %}btn-accent{% endif %}" data-follow-btn>{% if following %}Following{% else %}Follow{% endif %}</button>
+</form>

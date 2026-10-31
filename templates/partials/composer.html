@@ -1,0 +1,21 @@
+{% load helpup_tags %}
+<form class="card composer" method="post" action="{% url 'posts:create' %}" enctype="multipart/form-data" data-composer>
+  {% csrf_token %}
+  <div class="composer-row">
+    {% avatar user 'md' %}
+    <textarea name="text" rows="2" maxlength="1000" placeholder="What's happening in your neighbourhood?" aria-label="Post text" data-autogrow></textarea>
+  </div>
+  <div class="image-preview" data-preview hidden>
+    <img alt="Selected image preview">
+    <button type="button" class="preview-x" data-preview-clear aria-label="Remove image">×</button>
+  </div>
+  <div class="field-error" data-file-error hidden role="alert"></div>
+  <div class="composer-bar">
+    <label class="btn btn-ghost btn-sm file-btn">
+      <svg class="ic"><use href="#i-image"/></svg> Photo
+      <input type="file" name="image" accept="image/jpeg,image/png,image/gif,image/webp" data-image-input hidden>
+    </label>
+    <span class="meta" data-counter>0 / 1000</span>
+    <button type="submit" class="btn btn-accent">Publish</button>
+  </div>
+</form>

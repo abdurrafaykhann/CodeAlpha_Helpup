@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}Edit profile{% endblock %}
+{% block content %}
+<div class="narrow">
+  <form class="card form-card" method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <h1>Edit profile</h1>
+    <div class="avatar-edit">
+      <div data-avatar-preview>{% avatar user 'xl' %}</div>
+      <div>
+        <label class="btn btn-ghost btn-sm file-btn">Change picture{{ form.avatar }}</label>
+        <div class="help">JPG, PNG, GIF or WebP, up to 5 MB.</div>
+        {% for error in form.avatar.errors %}<div class="field-error" role="alert">{{ error }}</div>{% endfor %}
+        {% if user.profile.avatar %}<label class="check"><input type="checkbox" name="remove_avatar"> <span>Remove current picture</span></label>{% endif %}
+      </div>
+    </div>
+    <div class="field-error" data-file-error hidden role="alert"></div>
+
+    {% if form.non_field_errors %}<div class="form-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+      {% if field.name != 'avatar' and field.name != 'remove_avatar' and field.name != 'show_in_nearby' %}
+        <div class="field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}
+          {% for error in field.errors %}<div class="field-error" role="alert">{{ error }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    <fieldset class="privacy">
+      <legend>Nearby &amp; privacy</legend>
+      <label class="check"><input type="checkbox" name="show_in_nearby" {% if form.show_in_nearby.value %}checked{% endif %}> <span>{{ form.show_in_nearby.label }}</span></label>
+      <div class="help">{{ form.show_in_nearby.help_text }} HELPUP never asks for or shows your address or GPS location.</div>
+    </fieldset>
+
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{% url 'accounts:profile' user.username %}">Cancel</a>
+      <button class="btn btn-accent" type="submit">Save changes</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Delete post{% endblock %}
+{% block content %}
+<div class="narrow">
+  <form class="card form-card" method="post">
+    {% csrf_token %}
+    <h1>Delete this post?</h1>
+    <p class="meta">This permanently removes the post, its likes and its comments. This can't be undone.</p>
+    {% if post.text %}<blockquote class="quote">{{ post.text|truncatechars:200 }}</blockquote>{% endif %}
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{{ post.get_absolute_url }}">Keep it</a>
+      <button class="btn btn-danger" type="submit">Yes, delete</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

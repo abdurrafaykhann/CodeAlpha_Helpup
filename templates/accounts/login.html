@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <form class="card auth-card" method="post" novalidate>
+    {% csrf_token %}
+    <h1>Welcome back</h1>
+    <p class="meta">Log in to see what your people are up to.</p>
+    {% include 'partials/form_fields.html' %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn btn-accent btn-block" type="submit">Log in</button>
+    <p class="meta center">New to HELPUP? <a href="{% url 'accounts:register' %}"><strong>Create an account</strong></a></p>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Post by {{ post.author.username }}{% endblock %}
+{% block content %}
+<div class="narrow">
+  <p><a class="meta" href="javascript:history.back()">← Back</a></p>
+  {% include 'partials/post_card.html' with expanded=True %}
+</div>
+{% endblock %}

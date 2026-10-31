@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}Explore{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Explore</h1>
+  <p class="meta">Discover new people and fresh posts from across HELPUP.</p>
+</div>
+
+<form class="card search-card" action="{% url 'social:explore' %}" method="get" role="search">
+  <div class="search-row">
+    <svg class="ic"><use href="#i-search"/></svg>
+    <input type="search" name="q" value="{{ q }}" placeholder="Search by name, username, interest, city or post text" aria-label="Search">
+    <button class="btn btn-accent btn-sm" type="submit">Search</button>
+  </div>
+  <div class="segments">
+    <label><input type="radio" name="scope" value="all" {% if scope == 'all' %}checked{% endif %}> <span>All</span></label>
+    <label><input type="radio" name="scope" value="people" {% if scope == 'people' %}checked{% endif %}> <span>People</span></label>
+    <label><input type="radio" name="scope" value="posts" {% if scope == 'posts' %}checked{% endif %}> <span>Posts</span></label>
+  </div>
+</form>
+
+{% if q %}
+  {% if scope != 'posts' %}
+    <div class="section-title">People matching “{{ q }}”</div>
+    <div class="grid-cards">
+      {% for u in people %}{% include 'partials/user_card.html' %}{% empty %}<div class="card empty-state"><p>No people found.</p></div>{% endfor %}
+    </div>
+  {% endif %}
+  {% if scope != 'people' %}
+    <div class="section-title">Posts matching “{{ q }}”</div>
+    <div class="narrow wide">
+      {% for post in posts %}{% include 'partials/post_card.html' %}{% empty %}<div class="card empty-state"><p>No posts found.</p></div>{% endfor %}
+    </div>
+  {% endif %}
+{% else %}
+  <div class="section-title">Suggested people</div>
+  <div class="grid-cards">
+    {% for u in suggestions %}{% include 'partials/user_card.html' %}{% empty %}<div class="card empty-state"><p>No more suggestions right now.</p></div>{% endfor %}
+  </div>
+
+  <div class="section-title">Recent posts</div>
+  <div class="narrow wide">
+    {% for post in recent %}{% include 'partials/post_card.html' %}{% empty %}<div class="card empty-state"><p>No posts yet.</p></div>{% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

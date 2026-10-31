@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}{{ profile_user.profile.display_name }} (@{{ profile_user.username }}){% endblock %}
+{% block content %}
+{% with p=profile_user.profile %}
+<section class="card profile-head">
+  <div class="profile-cover"></div>
+  <div class="profile-body">
+    <div class="profile-avatar">{% avatar profile_user 'xl' %}</div>
+    <div class="profile-main">
+      <div class="profile-title">
+        <div>
+          <h1>{{ p.display_name }}</h1>
+          <div class="meta">@{{ profile_user.username }} · Joined {{ profile_user.date_joined|date:"F Y" }}</div>
+        </div>
+        <div class="profile-actions">
+          {% if is_me %}
+            <a class="btn btn-ghost" href="{% url 'accounts:profile_edit' %}">Edit profile</a>
+          {% else %}
+            {% include 'partials/follow_button.html' with target=profile_user following=is_following %}
+          {% endif %}
+        </div>
+      </div>
+      {% if p.bio %}<p class="bio">{{ p.bio }}</p>{% endif %}
+      <div class="profile-facts">
+        {% if p.location_label %}<span><svg class="ic ic-xs"><use href="#i-pin"/></svg> {{ p.location_label }}</span>{% endif %}
+        {% if is_me and not p.show_in_nearby %}<span class="chip">Hidden from Nearby</span>{% endif %}
+      </div>
+      {% if p.interest_list %}<div class="chips">{% for i in p.interest_list %}<span class="chip">{{ i }}</span>{% endfor %}</div>{% endif %}
+      <div class="stats">
+        <span><b>{{ post_count }}</b> posts</span>
+        <a href="{% url 'social:followers' profile_user.username %}"><b data-followers-count>{{ followers_count }}</b> followers</a>
+        <a href="{% url 'social:following' profile_user.username %}"><b>{{ following_count }}</b> following</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="narrow">
+  {% if is_me %}{% include 'partials/composer.html' %}{% endif %}
+  {% for post in page %}
+    {% include 'partials/post_card.html' %}
+  {% empty %}
+    <div class="card empty-state"><h3>No posts yet</h3><p>{% if is_me %}Share your first post above.{% else %}{{ p.display_name }} hasn't posted anything yet.{% endif %}</p></div>
+  {% endfor %}
+  {% include 'partials/pagination.html' %}
+</div>
+{% endwith %}
+{% endblock %}

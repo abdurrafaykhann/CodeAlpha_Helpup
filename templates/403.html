@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Not allowed{% endblock %}
+{% block content %}
+<div class="card empty-state">
+  <h1>403</h1>
+  <h2>That's not yours to change</h2>
+  <p>{{ message }}</p>
+  <a class="btn btn-accent" href="{% url 'home' %}">Back to home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Connect beyond your circle{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <span class="pill">Social, but local</span>
+    <h1>Connect beyond <span class="hl">your circle.</span></h1>
+    <p>HELPUP is a social network where you share posts and photos, follow people you admire, and discover who lives right around you.</p>
+    <div class="hero-cta">
+      <a class="btn btn-accent btn-lg" href="{% url 'accounts:register' %}">Create your account</a>
+      <a class="btn btn-ghost-light btn-lg" href="{% url 'accounts:login' %}">Log in</a>
+    </div>
+  </div>
+</section>
+<section class="features">
+  <div class="card feature"><div class="feature-ic"><svg class="ic"><use href="#i-image"/></svg></div><h3>Share your moments</h3><p>Post text and photos, collect likes and start conversations in the comments.</p></div>
+  <div class="card feature"><div class="feature-ic"><svg class="ic"><use href="#i-user"/></svg></div><h3>Follow what matters</h3><p>Build a feed from the people you follow, and find new voices on Explore.</p></div>
+  <div class="card feature"><div class="feature-ic"><svg class="ic"><use href="#i-pin"/></svg></div><h3>Discover people nearby</h3><p>Find neighbours by city, neighbourhood and shared interests. You control whether you appear, and only your area is ever shown.</p></div>
+</section>
+{% endblock %}

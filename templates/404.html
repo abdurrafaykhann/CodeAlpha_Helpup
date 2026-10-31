@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Not found{% endblock %}
+{% block content %}
+<div class="card empty-state">
+  <h1>404</h1>
+  <h2>We couldn't find that page</h2>
+  <p>The link may be broken, or the post or profile may have been removed.</p>
+  <a class="btn btn-accent" href="{% url 'home' %}">Back to home</a>
+</div>
+{% endblock %}

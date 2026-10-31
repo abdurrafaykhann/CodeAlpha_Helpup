@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load helpup_tags %}
+{% block title %}{% if editing %}Edit post{% else %}New post{% endif %}{% endblock %}
+{% block content %}
+<div class="narrow">
+  <form class="card form-card" method="post" enctype="multipart/form-data" novalidate data-composer>
+    {% csrf_token %}
+    <h1>{% if editing %}Edit post{% else %}Create a post{% endif %}</h1>
+    {% if form.non_field_errors %}<div class="form-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+
+    <div class="field">
+      <label for="{{ form.text.id_for_label }}">Text</label>
+      {{ form.text }}
+      <div class="meta right" data-counter>0 / 1000</div>
+      {% for error in form.text.errors %}<div class="field-error" role="alert">{{ error }}</div>{% endfor %}
+    </div>
+
+    <div class="field">
+      <label for="id_image">Image</label>
+      {% if editing and post.image %}
+        <div class="image-preview current"><img src="{{ post.image.url }}" alt="Current image"></div>
+        <label class="check"><input type="checkbox" name="remove_image"> <span>Remove current image</span></label>
+      {% endif %}
+      <div class="image-preview" data-preview hidden><img alt="Selected image preview"><button type="button" class="preview-x" data-preview-clear aria-label="Remove image">×</button></div>
+      {{ form.image }}
+      <div class="help">JPG, PNG, GIF or WebP, up to 5 MB.</div>
+      {% for error in form.image.errors %}<div class="field-error" role="alert">{{ error }}</div>{% endfor %}
+      <div class="field-error" data-file-error hidden role="alert"></div>
+    </div>
+
+    <div class="form-actions">
+      <a class="btn btn-ghost" href="{% if editing %}{{ post.get_absolute_url }}{% else %}{% url 'home' %}{% endif %}">Cancel</a>
+      <button class="btn btn-accent" type="submit">{% if editing %}Save changes{% else %}Publish{% endif %}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
